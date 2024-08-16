@@ -1,0 +1,1 @@
+This project includes many code sections such as object detection using the yolo library, object detection from the camera, vehicle identification and recording. Additionally, an interface has been created on the web page.
