@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nesne Tespit</title>
+    <style>
+        .btn{
+            margin: 10px;
+        }
+    </style>
+</head>
+<body style="text-align: center;">
+    <h1>Nesne Tespit</h1>
+    <form id="upload-form" method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" id="file-input" name="file" onchange="displayFilePath()">
+        <button type="submit">Dosyayı Yükle</button>
+    </form>
+    <div id="file-path" style="margin-top: 20px;"></div>
+    <div id="buttons" style="display: block; margin-top: 20px;" >
+        <button class="btn" onclick="processFile('nesne_bul')">Nesne bul</button>
+        <button class="btn" onclick="processFile('nesne_bul_kamera')">Kameradan nesne bul</button>
+        <button class="btn" onclick="processFile('arac_say')">Araç say</button>
+        <button class="btn" onclick="processFile('arac_say2')">Araç say 2</button>
+        <button class="btn" onclick="processFile('plaka_bul')">Fotograftan plaka bul</button>
+        <button class="btn" onclick="processFile('plaka_bul_kaydet')">Videodan plaka bul ve kaydet</button>
+        <button class="btn" onclick="processFile('plaka_bul_kaydet_kamera')">Kameradan plaka bul ve kaydet</button>
+    </div>
+    <script>
+        function displayFilePath() {
+            const fileInput = document.getElementById('file-input');
+            const filePath = fileInput.value.split('\\').pop(); // Sadece dosya adını göstermek için
+            document.getElementById('file-path').innerText = `Yüklenen dosya: ${filePath}`;
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.file_path) {
+                document.getElementById('file-path').innerText = `Yüklenen dosya yolu: ${result.file_path}`;
+            }
+        });
+
+        async function processFile(action) {
+            const response = await fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: action })
+            });
+            const result = await response.json();
+            console.log(result.message);
+        }
+    </script>
+</body>
+</html>
